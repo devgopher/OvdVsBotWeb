@@ -1,4 +1,5 @@
-﻿using OvdVsBotWeb.Models.API.Commands;
+﻿using OvdVsBotWeb.DataAccess;
+using OvdVsBotWeb.Models.Data;
 using OvdVsBotWeb.ResourceManagement;
 using Telegram.Bot;
 
@@ -9,12 +10,15 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
     {
         protected readonly MessageTextManager _messageTextManager;
         protected readonly ITelegramBotClient _botClient;
+        protected readonly IReadWriter<string> _chatStorage;
 
         protected CommandProcessor(MessageTextManager messageTextManager,
-            ITelegramBotClient botClient)
+            ITelegramBotClient botClient,
+            IReadWriter<string> chatStorage)
         {
             _messageTextManager = messageTextManager;
             _botClient = botClient;
+            _chatStorage = chatStorage;
         }
 
         public async Task Process(long chatId, params string[] args) => await InnerProcess(chatId, args);

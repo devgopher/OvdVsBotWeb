@@ -1,4 +1,5 @@
-﻿using OvdVsBotWeb.Models.API.Commands.Processors;
+﻿using OvdVsBotWeb.DataAccess;
+using OvdVsBotWeb.Models.API.Commands.Processors;
 using OvdVsBotWeb.ResourceManagement;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
@@ -15,6 +16,7 @@ namespace OvdVsBotWeb.Handlers
         private readonly ILogger _logger;
         private const string simpleCommandPattern = @"\/([a-zA-Z0-9]*)";
         private const string argsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
+
         public BotUpdateHandler(ITelegramBotClient botClient,
             MessageTextManager messageTextManager,
             CommandProcessorFactory cpFactory,
@@ -44,11 +46,10 @@ namespace OvdVsBotWeb.Handlers
                 var args = new List<string>(5);
                 var result = "";
 
-
                 var lang = SupportedLangs.EN; // NOTE: temporary!
                 ProcessCommands(text, update.Message.Chat.Id, lang, ref command, ref args, ref result);
 
-                await _botClient.SendTextMessageAsync(update.Message.Chat.Id, result);
+               // await _botClient.SendTextMessageAsync(update.Message.Chat.Id, result);
             }
             catch (Exception ex)
             {
@@ -69,7 +70,7 @@ namespace OvdVsBotWeb.Handlers
                     .FirstOrDefault()
                     .Groups[1].Value;
                 _cpFactory.Get(command)
-                                                       .Process(chatId);
+                    .Process(chatId);
             }
             else if (Regex.IsMatch(text, argsCommandPattern))
             {

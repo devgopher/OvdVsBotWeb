@@ -2,6 +2,7 @@
 {
     public interface IJobManager
     {
+        void AddJob<T>(IJob<T> job, T message, string cron);
         void AddJob<T>(IJob<T> job, T message);
         void RemoveJob<T>(IJob<T> job);
     }

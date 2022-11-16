@@ -14,6 +14,10 @@
     <WarningLevel>7</WarningLevel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="C:\Users\Igor\.nuget\packages\nlog.config\4.7.15\contentFiles\any\any\NLog.config" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Hangfire" Version="1.7.31" />

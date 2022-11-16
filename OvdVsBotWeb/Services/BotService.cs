@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using OvdVsBotWeb.Settings;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Polling;
 
 namespace OvdVsBotWeb.Services

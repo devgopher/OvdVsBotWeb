@@ -1,11 +1,14 @@
-﻿using OvdVsBotWeb.ResourceManagement;
+﻿using OvdVsBotWeb.DataAccess;
+using OvdVsBotWeb.ResourceManagement;
 using Telegram.Bot;
 
 namespace OvdVsBotWeb.Models.API.Commands.Processors
 {
     public class UnknownCommandProcessor : CommandProcessor<Unknown>
     {
-        public UnknownCommandProcessor(MessageTextManager messageTextManager, ITelegramBotClient botClient) : base(messageTextManager, botClient)
+        public UnknownCommandProcessor(MessageTextManager messageTextManager, 
+            ITelegramBotClient botClient,
+            IReadWriter<string> chatStorage) : base(messageTextManager, botClient, chatStorage)
         {
         }
 

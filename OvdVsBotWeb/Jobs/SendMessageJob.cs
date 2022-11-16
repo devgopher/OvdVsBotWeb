@@ -17,7 +17,7 @@ namespace OvdVsBotWeb.Jobs
 
         public Guid Id { get; }
 
-        public async Task DoIt(Message msg)
+        public virtual async Task DoIt(Message msg)
         {
             try
             {

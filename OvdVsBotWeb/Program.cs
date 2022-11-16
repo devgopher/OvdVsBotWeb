@@ -1,6 +1,7 @@
 using Hangfire;
 using Hangfire.MemoryStorage;
 using NLog.Web;
+using OvdVsBotWeb.DataAccess;
 using OvdVsBotWeb.Handlers;
 using OvdVsBotWeb.Jobs;
 using OvdVsBotWeb.Models.API.Commands;
@@ -18,23 +19,30 @@ builder.Services.Configure<BotSettings>(builder.Configuration.GetSection(nameof(
 var botConfig = new BotSettings();
 builder.Configuration.GetSection(nameof(BotSettings)).Bind(botConfig);
 
-builder.Services
+ builder.Services
     .AddSingleton<ITelegramBotClient, TelegramBotClient>(tf => new TelegramBotClient(botConfig.TelegramToken))
     .AddSingleton<CommandProcessorFactory>()
-    .AddScoped<CommandProcessor<Start>, StartCommandProcessor>()
-    .AddScoped<CommandProcessor<CreateSchedule>, CreateScheduleCommandProcessor>()
-    .AddScoped<CommandProcessor<RemoveSchedule>, RemoveScheduleCommandProcessor>()
-    .AddScoped<CommandProcessor<Unknown>, UnknownCommandProcessor>()
+    .AddSingleton<CommandProcessor<Start>, StartCommandProcessor>()
+    .AddSingleton<CommandProcessor<CreateSchedule>, CreateScheduleCommandProcessor>()
+    .AddSingleton<CommandProcessor<RemoveSchedule>, RemoveScheduleCommandProcessor>()
+    .AddSingleton<CommandProcessor<Unknown>, UnknownCommandProcessor>()
+    .AddSingleton<IReadWriter<string>, MemoryRepository<string>>()
     .AddSingleton<IJobManager, JobManager>()
     .AddSingleton<MessageTextManager>()
     .AddSingleton<IUpdateHandler, BotUpdateHandler>()
     .AddSingleton<JobManager>()
+    .AddSingleton<SendMessageJob>()
+    .AddSingleton(sp => new RandomSendMessageJob(sp.GetRequiredService<ITelegramBotClient>(),
+                                                 sp.GetRequiredService<ILogger<SendMessageJob>>(),
+                                                 10))
     .AddHostedService<BotService>()
     .AddHangfire(configuration => configuration
         .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
         .UseSimpleAssemblyNameTypeSerializer()
         .UseRecommendedSerializerSettings()
-        .UseMemoryStorage());
+        .UseMemoryStorage())
+    .AddHangfireServer()
+    .AddMvc();
 
 builder.Host.ConfigureLogging(logging =>
                                 {
@@ -44,6 +52,8 @@ builder.Host.ConfigureLogging(logging =>
                                 })
     .UseNLog();
 
+
 var app = builder.Build();
+app.UseHangfireDashboard();
 
 app.Run();

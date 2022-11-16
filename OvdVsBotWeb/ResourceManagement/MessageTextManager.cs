@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Collections;
-using System.Reflection;
-using System.Resources;
+﻿using System.Collections;
 using System.Resources.NetStandard;
 
 namespace OvdVsBotWeb.ResourceManagement
@@ -37,11 +34,11 @@ namespace OvdVsBotWeb.ResourceManagement
                 if (rm == default)
                     throw new InvalidOperationException($"Can't find a resource manager for lang: {clientLanguage}!");
 
-                foreach (DictionaryEntry d in rm )
+                foreach (DictionaryEntry entry in rm )
                 {
-                    if (d.Key.Equals(key))
+                    if (entry.Key.Equals(key))
                     {
-                        result = d.Value?.ToString();
+                        result = entry.Value?.ToString();
                         break;
                     }
                 }
