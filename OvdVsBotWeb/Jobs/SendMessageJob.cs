@@ -7,7 +7,6 @@ namespace OvdVsBotWeb.Jobs
     {
         private readonly ITelegramBotClient _botClient;
         private readonly ILogger _logger;
-
         public SendMessageJob(ITelegramBotClient botClient, ILogger<SendMessageJob> logger)
         {
             _botClient = botClient;

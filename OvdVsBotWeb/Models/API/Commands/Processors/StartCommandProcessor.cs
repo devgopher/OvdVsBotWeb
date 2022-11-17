@@ -3,6 +3,7 @@ using OvdVsBotWeb.DataAccess;
 using OvdVsBotWeb.Jobs;
 using OvdVsBotWeb.Models.Data;
 using OvdVsBotWeb.ResourceManagement;
+using OvdVsBotWeb.Services;
 using Telegram.Bot;
 
 
@@ -12,37 +13,37 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
     {
         private readonly IJobManager _jobManager;
         private readonly IServiceProvider _sp;
+        private readonly IJobManagementService _jobManagementService;
+
+
 
         public StartCommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
             IJobManager jobManager,
             IReadWriter<string> chatStorage,
-            IServiceProvider sp) : base(messageTextManager, botClient, chatStorage)
+            IServiceProvider sp,
+            IJobManagementService jobManagementService) : base(messageTextManager, botClient, chatStorage)
         {
             _jobManager = jobManager;
             _sp = sp;
+            _jobManagementService = jobManagementService;
         }
 
         protected override async Task InnerProcess(long chatId, params string[] args)
         {
-            _chatStorage.Add(new Chat()
+            if (_chatStorage.Get(chatId.ToString()) != default)
+                return;
+
+            var chat = new Chat()
             {
                 ChatId = chatId.ToString()
-            });
-
-            await _botClient.SendTextMessageAsync(chatId, _messageTextManager.GetText("HelloMsg", SupportedLangs.EN));
-
-            var msg = new Message()
-            {
-                Body = "Stop inner dialog!! Mind yourself!!",
-                Subject = "Reminder!",
-                ChatId = chatId.ToString(),
-                MessageId = Guid.NewGuid()
             };
 
-            var job = _sp.GetRequiredService<RandomSendMessageJob>();
+            await _botClient.SendTextMessageAsync(chat.Id, _messageTextManager.GetText("HelloMsg", SupportedLangs.EN));
 
-            _jobManager.AddJob(job, msg, Cron.Minutely());
+            _chatStorage.Add(chat);
+
+            await _jobManagementService.StartJob(chat);
         }
     }
 }

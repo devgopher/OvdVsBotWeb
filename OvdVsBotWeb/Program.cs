@@ -1,5 +1,6 @@
 using Hangfire;
 using Hangfire.MemoryStorage;
+using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 using OvdVsBotWeb.DataAccess;
 using OvdVsBotWeb.Handlers;
@@ -26,12 +27,13 @@ builder.Configuration.GetSection(nameof(BotSettings)).Bind(botConfig);
     .AddSingleton<CommandProcessor<CreateSchedule>, CreateScheduleCommandProcessor>()
     .AddSingleton<CommandProcessor<RemoveSchedule>, RemoveScheduleCommandProcessor>()
     .AddSingleton<CommandProcessor<Unknown>, UnknownCommandProcessor>()
-    .AddSingleton<IReadWriter<string>, MemoryRepository<string>>()
+    .AddSingleton<IReadWriter<string>, SqliteChatRepository>()
     .AddSingleton<IJobManager, JobManager>()
     .AddSingleton<MessageTextManager>()
     .AddSingleton<IUpdateHandler, BotUpdateHandler>()
     .AddSingleton<JobManager>()
     .AddSingleton<SendMessageJob>()
+    .AddSingleton<IJobManagementService, JobManagementService>()
     .AddSingleton(sp => new RandomSendMessageJob(sp.GetRequiredService<ITelegramBotClient>(),
                                                  sp.GetRequiredService<ILogger<SendMessageJob>>(),
                                                  10))
@@ -42,6 +44,7 @@ builder.Configuration.GetSection(nameof(BotSettings)).Bind(botConfig);
         .UseRecommendedSerializerSettings()
         .UseMemoryStorage())
     .AddHangfireServer()
+    .AddDbContext<OvdDbContext>(o => o.UseSqlite(botConfig.ConnectionString))
     .AddMvc();
 
 builder.Host.ConfigureLogging(logging =>

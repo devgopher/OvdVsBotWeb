@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
+using static Dapper.SqlMapper;
 
 namespace OvdVsBotWeb.DataAccess
 {
@@ -11,6 +13,8 @@ namespace OvdVsBotWeb.DataAccess
         public IEntity<TId> Get(TId id) => _dict[id];
 
         public IEntity<TId> Get(Func<IEntity<TId>> filter) => throw new NotImplementedException();
+
+        public IEnumerable<IEntity<TId>> GetAll() => _dict.Values;
 
         //public IEntity<TId> Get(Func<IEntity<TId>> filter) => _dict.Where(x => filter(x));
 
