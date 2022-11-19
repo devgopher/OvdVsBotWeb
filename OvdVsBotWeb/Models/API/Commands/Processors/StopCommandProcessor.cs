@@ -7,11 +7,11 @@ using Telegram.Bot;
 
 namespace OvdVsBotWeb.Models.API.Commands.Processors
 {
-    public class StartCommandProcessor : CommandProcessor<Start>
+    public class StopCommandProcessor : CommandProcessor<Stop>
     {
         private readonly IJobManagementService _jobManagementService;
 
-        public StartCommandProcessor(MessageTextManager messageTextManager,
+        public StopCommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
             IReadWriter<string> chatStorage,
             IJobManagementService jobManagementService) : base(messageTextManager, botClient, chatStorage)
@@ -21,19 +21,14 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
 
         protected override async Task InnerProcess(long chatId, params string[] args)
         {
-            if (_chatStorage.Get(chatId.ToString()) != default)
+            if (_chatStorage.Get(chatId.ToString()) == default)
                 return;
 
-            var chat = new Chat()
-            {
-                ChatId = chatId.ToString()
-            };
+            await _botClient.SendTextMessageAsync(chatId, _messageTextManager.GetText("GoodByeMsg", SupportedLangs.EN));
 
-            await _botClient.SendTextMessageAsync(chat.Id, _messageTextManager.GetText("HelloMsg", SupportedLangs.EN));
+            _chatStorage.Remove(chatId.ToString());
 
-            _chatStorage.Add(chat);
-
-            await _jobManagementService.StartJob(chat);
+            await _jobManagementService.StopJob(chatId.ToString());
         }
     }
 }

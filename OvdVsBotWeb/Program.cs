@@ -24,6 +24,7 @@ builder.Configuration.GetSection(nameof(BotSettings)).Bind(botConfig);
     .AddSingleton<ITelegramBotClient, TelegramBotClient>(tf => new TelegramBotClient(botConfig.TelegramToken))
     .AddSingleton<CommandProcessorFactory>()
     .AddSingleton<CommandProcessor<Start>, StartCommandProcessor>()
+    .AddSingleton<CommandProcessor<Stop>, StopCommandProcessor>()
     .AddSingleton<CommandProcessor<CreateSchedule>, CreateScheduleCommandProcessor>()
     .AddSingleton<CommandProcessor<RemoveSchedule>, RemoveScheduleCommandProcessor>()
     .AddSingleton<CommandProcessor<Unknown>, UnknownCommandProcessor>()

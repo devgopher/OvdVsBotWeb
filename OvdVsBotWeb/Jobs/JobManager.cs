@@ -4,20 +4,18 @@ namespace OvdVsBotWeb.Jobs
 {
     public class JobManager : IJobManager
     {
-        private readonly static Random _rand = new(DateTime.Now.Millisecond);
-
-        public void AddJob<T>(IJob<T> job, T message, string cron)
+        public void AddJob<T>(string id, IJob<T> job, T message, string cron)
         {
-            RecurringJob.AddOrUpdate(
-                $"sendmsgjob_{job.Id}",
+             RecurringJob.AddOrUpdate(
+                id,
                 () => job.DoIt(message),
                 cron);
         }
 
-        public void AddJob<T>(IJob<T> job, T message)
-            => AddJob(job, message, Cron.Hourly());
+        public void AddJob<T>(string id, IJob<T> job, T message)
+            => AddJob(id, job, message, Cron.Hourly());
 
-        public void RemoveJob<T>(IJob<T> job) 
-            => RecurringJob.RemoveIfExists($"sendmsgjob_{job.Id}");
+        public void RemoveJob(string id)
+            => RecurringJob.RemoveIfExists(id);
     }
 }

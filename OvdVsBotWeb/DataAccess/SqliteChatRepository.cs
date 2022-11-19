@@ -30,9 +30,16 @@ namespace OvdVsBotWeb.DataAccess
 
         //public IEntity<TId> Get(Func<IEntity<TId>> filter) => _dict.Where(x => filter(x));
 
-        public void Remove(IEntity<string> entity) => _dbContext.Remove(entity);
-
-        public void Remove(string id) => _dbContext.Chats.Remove(_dbContext.Chats.FirstOrDefault(c => c.Id == id));
+        public void Remove(IEntity<string> entity)
+        {
+            _dbContext.Remove(entity);
+            _dbContext.SaveChanges();
+        }
+        public void Remove(string id)
+        {
+            _dbContext.Chats.Remove(_dbContext.Chats.FirstOrDefault(c => c.Id == id));
+            _dbContext.SaveChanges();
+        }
     }
 
 }

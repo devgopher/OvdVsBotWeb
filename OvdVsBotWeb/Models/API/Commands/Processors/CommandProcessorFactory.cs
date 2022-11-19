@@ -29,6 +29,8 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
                     return _serviceProvider.GetRequiredService<CommandProcessor<RemoveSchedule>>();
                 case nameof(Start):
                     return _serviceProvider.GetRequiredService<CommandProcessor<Start>>();
+                case nameof(Stop):
+                    return _serviceProvider.GetRequiredService<CommandProcessor<Stop>>();
                 default:
                     return _serviceProvider.GetRequiredService<CommandProcessor<Unknown>>();
             }

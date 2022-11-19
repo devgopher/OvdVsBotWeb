@@ -27,6 +27,7 @@ namespace OvdVsBotWeb.Services
 
             await _jobManagementService.StartAll();
         }
+
         public async Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Stopping BotService...");

@@ -6,5 +6,6 @@ namespace OvdVsBotWeb.Services
     {
         Task StartAll();
         Task StartJob(Chat chat);
+        Task StopJob(string chatId);
     }
 }

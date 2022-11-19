@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Hangfire.Common;
 using OvdVsBotWeb.DataAccess;
 using OvdVsBotWeb.Jobs;
 using OvdVsBotWeb.ResourceManagement;
@@ -39,17 +40,21 @@ namespace OvdVsBotWeb.Services
 
         public async Task StartJob(Chat chat)
         {
-             var msg = new Message()
+            var msg = new Message()
             {
-                Body = "Stop inner dialog!! Mind yourself!!",
-                Subject = "Reminder!",
+                Body = _messageTextManager.GetText("OvdVsMsg", SupportedLangs.EN),
+                Subject = string.Empty,
                 ChatId = chat.Id.ToString(),
                 MessageId = Guid.NewGuid()
             };
 
             var job = _sp.GetRequiredService<RandomSendMessageJob>();
 
-            _jobManager.AddJob(job, msg, Cron.Minutely());
+            _jobManager.AddJob(GetJobId(chat.ChatId), job, msg, Cron.Minutely());
         }
+
+        public async Task StopJob(string chatId) => _jobManager.RemoveJob(GetJobId(chatId));
+
+        private string GetJobId(string chatId) => $"sendmsgjob_{chatId}";
     }
 }

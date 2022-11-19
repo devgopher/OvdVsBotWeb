@@ -1,16 +1,17 @@
 ﻿using System.Collections;
+using System.Reflection;
 using System.Resources.NetStandard;
 
 namespace OvdVsBotWeb.ResourceManagement
 {
     public class MessageTextManager
     {
-        private readonly IList<ResXResourceReader> resourceManagers = new List<ResXResourceReader>(5);
+        private readonly Dictionary<string, ResXResourceReader> resourceManagers = new(5);
 
         public MessageTextManager()
         {
-            resourceManagers.Add(ResXResourceReader.FromFileContents("ResourceManagement/Messages.Ru.resx"));
-            resourceManagers.Add(ResXResourceReader.FromFileContents("ResourceManagement/Messages.En.resx"));
+            resourceManagers["ru"] = new ResXResourceReader(@".\ResourceManagement\Messages.Ru.resx");
+            resourceManagers["en"] = new ResXResourceReader(@".\ResourceManagement\Messages.En.resx");
         }
 
         public string GetText(string key, SupportedLangs clientLanguage)
@@ -23,11 +24,11 @@ namespace OvdVsBotWeb.ResourceManagement
                 switch (clientLanguage)
                 {
                     case SupportedLangs.RU:
-                        rm = resourceManagers.FirstOrDefault(rm => rm.BasePath.Contains(".Ru"));
+                        rm = resourceManagers["ru"];
                         break;
                     case SupportedLangs.EN:
                     default:
-                        rm = resourceManagers.FirstOrDefault(rm => rm.BasePath.Contains(".En"));
+                        rm = resourceManagers["en"];
                         break;
                 }
 
@@ -38,7 +39,7 @@ namespace OvdVsBotWeb.ResourceManagement
                 {
                     if (entry.Key.Equals(key))
                     {
-                        result = entry.Value?.ToString();
+                        result = Process(entry.Value?.ToString());
                         break;
                     }
                 }
@@ -51,5 +52,9 @@ namespace OvdVsBotWeb.ResourceManagement
 
             return key;
         }
+
+        private static string Process(string strg)
+            => strg.Replace(@"\n", Environment.NewLine)
+                   .Replace(@"\ver", Assembly.GetExecutingAssembly().GetName().Version.ToString());
     }
 }
