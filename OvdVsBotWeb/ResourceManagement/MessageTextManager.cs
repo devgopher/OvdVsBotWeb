@@ -10,8 +10,8 @@ namespace OvdVsBotWeb.ResourceManagement
 
         public MessageTextManager()
         {
-            resourceManagers["ru"] = new ResXResourceReader(@".\ResourceManagement\Messages.Ru.resx");
-            resourceManagers["en"] = new ResXResourceReader(@".\ResourceManagement\Messages.En.resx");
+            resourceManagers["ru"] = new ResXResourceReader(Path.Combine("ResourceManagement", "Messages.Ru.resx"));
+            resourceManagers["en"] = new ResXResourceReader(Path.Combine("ResourceManagement", "Messages.En.resx"));
         }
 
         public string GetText(string key, SupportedLangs clientLanguage)

@@ -63,11 +63,15 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
 # StyleCop
 StyleCopReport.xml
+
+#keys
+*.pem
 
 # Files built by Visual Studio
 *_i.c
