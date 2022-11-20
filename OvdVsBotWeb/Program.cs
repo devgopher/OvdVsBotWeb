@@ -20,41 +20,42 @@ builder.Services.Configure<BotSettings>(builder.Configuration.GetSection(nameof(
 var botConfig = new BotSettings();
 builder.Configuration.GetSection(nameof(BotSettings)).Bind(botConfig);
 
- builder.Services
-    .AddSingleton<ITelegramBotClient, TelegramBotClient>(tf => new TelegramBotClient(botConfig.TelegramToken))
-    .AddSingleton<CommandProcessorFactory>()
-    .AddSingleton<CommandProcessor<Start>, StartCommandProcessor>()
-    .AddSingleton<CommandProcessor<Stop>, StopCommandProcessor>()
-    .AddSingleton<CommandProcessor<CreateSchedule>, CreateScheduleCommandProcessor>()
-    .AddSingleton<CommandProcessor<RemoveSchedule>, RemoveScheduleCommandProcessor>()
-    .AddSingleton<CommandProcessor<Unknown>, UnknownCommandProcessor>()
-    .AddSingleton<IReadWriter<string>, SqliteChatRepository>()
-    .AddSingleton<IJobManager, JobManager>()
-    .AddSingleton<MessageTextManager>()
-    .AddSingleton<IUpdateHandler, BotUpdateHandler>()
-    .AddSingleton<JobManager>()
-    .AddSingleton<SendMessageJob>()
-    .AddSingleton<IJobManagementService, JobManagementService>()
-    .AddSingleton(sp => new RandomSendMessageJob(sp.GetRequiredService<ITelegramBotClient>(),
-                                                 sp.GetRequiredService<ILogger<SendMessageJob>>(),
-                                                 10))
-    .AddHostedService<BotService>()
-    .AddHangfire(configuration => configuration
-        .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-        .UseSimpleAssemblyNameTypeSerializer()
-        .UseRecommendedSerializerSettings()
-        .UseMemoryStorage())
-    .AddHangfireServer()
-    .AddDbContext<OvdDbContext>(o => o.UseSqlite(botConfig.ConnectionString))
-    .AddMvc();
+builder.Services
+   .AddSingleton<ITelegramBotClient, TelegramBotClient>(tf => new TelegramBotClient(botConfig.TelegramToken))
+   .AddSingleton<CommandProcessorFactory>()
+   .AddSingleton<CommandProcessor<Start>, StartCommandProcessor>()
+   .AddSingleton<CommandProcessor<Stop>, StopCommandProcessor>()
+   .AddSingleton<CommandProcessor<CreateSchedule>, CreateScheduleCommandProcessor>()
+   .AddSingleton<CommandProcessor<RemoveSchedule>, RemoveScheduleCommandProcessor>()
+   .AddSingleton<CommandProcessor<Unknown>, UnknownCommandProcessor>()
+   .AddSingleton<IReadWriter<string>, SqliteChatRepository>()
+   .AddSingleton<IJobManager, JobManager>()
+   .AddSingleton<MessageTextManager>()
+   .AddSingleton<IUpdateHandler, BotUpdateHandler>()
+   .AddSingleton<JobManager>()
+   .AddSingleton<SendMessageJob>()
+   .AddSingleton<IJobManagementService, JobManagementService>()
+   .AddSingleton(sp => new RandomSendMessageJob(sp.GetRequiredService<ITelegramBotClient>(),
+                                                sp.GetRequiredService<ILogger<SendMessageJob>>(),
+                                                10))
+   .AddHostedService<BotService>()
+   .AddHangfire(configuration => configuration
+       .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+       .UseSimpleAssemblyNameTypeSerializer()
+       .UseRecommendedSerializerSettings()
+       .UseMemoryStorage())
+   .AddHangfireServer()
+   .AddDbContext<OvdDbContext>(o => o.UseSqlite(botConfig.ConnectionString))
+   .AddMvc();
 
 builder.Host.ConfigureLogging(logging =>
                                 {
                                     logging.ClearProviders();
                                     logging.SetMinimumLevel(LogLevel.Trace);
-                                    logging.AddConsole();
+                                    //logging.AddConsole();
                                 })
     .UseNLog();
+
 
 
 var app = builder.Build();
