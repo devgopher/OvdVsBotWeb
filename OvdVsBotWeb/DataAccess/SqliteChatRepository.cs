@@ -5,6 +5,7 @@ namespace OvdVsBotWeb.DataAccess
     public class SqliteChatRepository : IReadWriter<string>
     {
         private readonly OvdDbContext _dbContext;
+        private readonly object _sync = new object();
 
         public SqliteChatRepository(IServiceScopeFactory factory)
         {
@@ -13,8 +14,10 @@ namespace OvdVsBotWeb.DataAccess
 
         public void Add(IEntity<string> entity)
         {
-            _dbContext.Add(entity);
-            _dbContext.SaveChanges();
+            lock (_sync) {
+                _dbContext.Add(entity);
+                _dbContext.SaveChanges();
+            }
         }
 
         public bool Any()
@@ -32,14 +35,19 @@ namespace OvdVsBotWeb.DataAccess
 
         public void Remove(IEntity<string> entity)
         {
-            _dbContext.Remove(entity);
-            _dbContext.SaveChanges();
+            lock (_sync)
+            {
+                _dbContext.Remove(entity);
+                _dbContext.SaveChanges();
+            }
         }
         public void Remove(string id)
         {
-            _dbContext.Chats.Remove(_dbContext.Chats.FirstOrDefault(c => c.Id == id));
-            _dbContext.SaveChanges();
+            lock (_sync)
+            {
+                _dbContext.Chats.Remove(_dbContext.Chats.FirstOrDefault(c => c.Id == id));
+                _dbContext.SaveChanges();
+            }
         }
     }
-
 }
