@@ -46,7 +46,6 @@ namespace OvdVsBotWeb.Handlers
                 var args = new List<string>(5);
                 var result = "";
 
-                var lang = SupportedLangs.EN; // NOTE: temporary!
                 ProcessCommands(text, update.Message.Chat.Id, lang, ref command, ref args, ref result);
             }
             catch (Exception ex)
@@ -57,7 +56,6 @@ namespace OvdVsBotWeb.Handlers
 
         private void ProcessCommands(string text,
             long chatId,
-            SupportedLangs lang,
             ref string command,
             ref List<string> args,
             ref string result)
@@ -89,7 +87,7 @@ namespace OvdVsBotWeb.Handlers
             }
             else
             {
-                result = _messageTextManager.GetText("ErroneousCommand", lang);
+                result = _messageTextManager.GetText("ErroneousCommand", SupportedLangs.EN);
             }
         }
     }

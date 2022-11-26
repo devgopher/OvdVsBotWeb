@@ -45,7 +45,7 @@ builder.Services
    .AddSingleton<ICommandValidator<Lang>, LangValidator>()
    .AddSingleton(sp => new RandomSendMessageJob(sp.GetRequiredService<ITelegramBotClient>(),
                                                 sp.GetRequiredService<ILogger<SendMessageJob>>(),
-                                                1))
+                                                15))
    .AddHostedService<BotService>()
    .AddHangfire(configuration => configuration
        .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
