@@ -46,7 +46,7 @@ namespace OvdVsBotWeb.Handlers
                 var args = new List<string>(5);
                 var result = "";
 
-                ProcessCommands(text, update.Message.Chat.Id, lang, ref command, ref args, ref result);
+                ProcessCommands(text, update.Message.Chat.Id, ref command, ref args, ref result);
             }
             catch (Exception ex)
             {
