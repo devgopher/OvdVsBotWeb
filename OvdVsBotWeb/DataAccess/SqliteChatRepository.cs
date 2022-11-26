@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OvdVsBotWeb.Models.Data;
 
 namespace OvdVsBotWeb.DataAccess
 {
@@ -46,6 +47,15 @@ namespace OvdVsBotWeb.DataAccess
             lock (_sync)
             {
                 _dbContext.Chats.Remove(_dbContext.Chats.FirstOrDefault(c => c.Id == id));
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public void Update(IEntity<string> entity)
+        {
+            lock (_sync)
+            {
+                _dbContext.Chats.Update((Chat)entity);
                 _dbContext.SaveChanges();
             }
         }

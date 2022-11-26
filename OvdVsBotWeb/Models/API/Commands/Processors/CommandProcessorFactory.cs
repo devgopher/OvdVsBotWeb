@@ -31,6 +31,8 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
                     return _serviceProvider.GetRequiredService<CommandProcessor<Start>>();
                 case nameof(Stop):
                     return _serviceProvider.GetRequiredService<CommandProcessor<Stop>>();
+                case nameof(Lang):
+                    return _serviceProvider.GetRequiredService<CommandProcessor<Lang>>();
                 default:
                     return _serviceProvider.GetRequiredService<CommandProcessor<Unknown>>();
             }

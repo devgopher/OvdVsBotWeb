@@ -14,7 +14,7 @@ namespace OvdVsBotWeb.Handlers
         private readonly CommandProcessorFactory _cpFactory;
         private readonly MessageTextManager _messageTextManager;
         private readonly ILogger _logger;
-        private const string simpleCommandPattern = @"\/([a-zA-Z0-9]*)";
+        private const string simpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
         private const string argsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
 
         public BotUpdateHandler(ITelegramBotClient botClient,

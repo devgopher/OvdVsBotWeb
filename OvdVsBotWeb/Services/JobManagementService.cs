@@ -42,7 +42,7 @@ namespace OvdVsBotWeb.Services
         {
             var msg = new Message()
             {
-                Body = _messageTextManager.GetText("OvdVsMsg", SupportedLangs.EN),
+                Body = _messageTextManager.GetText("OvdVsMsg", chat.Lang),
                 Subject = string.Empty,
                 ChatId = chat.Id.ToString(),
                 MessageId = Guid.NewGuid()

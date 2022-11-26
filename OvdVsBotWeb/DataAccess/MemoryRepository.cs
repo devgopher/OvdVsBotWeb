@@ -21,6 +21,9 @@ namespace OvdVsBotWeb.DataAccess
         public void Remove(IEntity<TId> entity) => _dict.Remove(entity.Id, out _);
 
         public void Remove(TId id) => _dict.Remove(id, out _);
+
+        public void Update(IEntity<TId> entity)
+            => _dict[entity.Id] = entity;
     }
 
 }

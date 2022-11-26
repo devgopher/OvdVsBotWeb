@@ -6,6 +6,7 @@
         public IEntity<TId> Get(Func<IEntity<TId>> filter);
         public IEnumerable<IEntity<TId>> GetAll();
         public void Add(IEntity<TId> entity);
+        public void Update(IEntity<TId> entity);
         public void Remove(IEntity<TId> entity);
         public void Remove(TId id);
     }

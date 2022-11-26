@@ -1,7 +1,9 @@
 ﻿using OvdVsBotWeb.DataAccess;
+using OvdVsBotWeb.Models.API.Commands.Validators;
 using OvdVsBotWeb.Models.Data;
 using OvdVsBotWeb.ResourceManagement;
 using OvdVsBotWeb.Services;
+using OvdVsBotWeb.Utils;
 using Telegram.Bot;
 
 
@@ -14,17 +16,19 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
         public StopCommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
             IReadWriter<string> chatStorage,
-            IJobManagementService jobManagementService) : base(messageTextManager, botClient, chatStorage)
+            IJobManagementService jobManagementService,
+            ICommandValidator<Stop> validator) : base(messageTextManager, botClient, chatStorage, validator)
         {
             _jobManagementService = jobManagementService;
         }
 
         protected override async Task InnerProcess(long chatId, params string[] args)
         {
-            if (_chatStorage.Get(chatId.ToString()) == default)
+            var chat = (Chat)_chatStorage.Get(chatId.ToString());
+            if (chat == default)
                 return;
 
-            await _botClient.SendTextMessageAsync(chatId, _messageTextManager.GetText("GoodByeMsg", SupportedLangs.EN));
+            await _botClient.SendTextMessageAsync(chatId, _messageTextManager.GetText("GoodByeMsg", chat.Lang));
 
             _chatStorage.Remove(chatId.ToString());
 

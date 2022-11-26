@@ -126,6 +126,9 @@
   <data name="HelloMsg" xml:space="preserve">
     <value>Welcome! \nThis is a special bot for a stopping internal dialog practice... From time to time you'll receive a special reminder to stop your internal dialogue and mind yourself. \n\n This is an early version (\ver) of our bot and it doesn't support schedules for messaging, and so at the night time you sholud turn off notifications for this chat or set your device to a silent mode.</value>
   </data>
+  <data name="LangMsg" xml:space="preserve">
+    <value>Switched to English</value>
+  </data>
   <data name="OvdVsMsg" xml:space="preserve">
     <value>Stop internal dialog!\nMind yourself</value>
   </data>

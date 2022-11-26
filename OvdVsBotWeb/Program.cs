@@ -7,6 +7,7 @@ using OvdVsBotWeb.Handlers;
 using OvdVsBotWeb.Jobs;
 using OvdVsBotWeb.Models.API.Commands;
 using OvdVsBotWeb.Models.API.Commands.Processors;
+using OvdVsBotWeb.Models.API.Commands.Validators;
 using OvdVsBotWeb.Models.Commands;
 using OvdVsBotWeb.ResourceManagement;
 using OvdVsBotWeb.Services;
@@ -23,6 +24,7 @@ builder.Configuration.GetSection(nameof(BotSettings)).Bind(botConfig);
 builder.Services
    .AddSingleton<ITelegramBotClient, TelegramBotClient>(tf => new TelegramBotClient(botConfig.TelegramToken))
    .AddSingleton<CommandProcessorFactory>()
+   .AddSingleton<CommandProcessor<Lang>, LangCommandProcessor>()
    .AddSingleton<CommandProcessor<Start>, StartCommandProcessor>()
    .AddSingleton<CommandProcessor<Stop>, StopCommandProcessor>()
    .AddSingleton<CommandProcessor<CreateSchedule>, CreateScheduleCommandProcessor>()
@@ -35,9 +37,15 @@ builder.Services
    .AddSingleton<JobManager>()
    .AddSingleton<SendMessageJob>()
    .AddSingleton<IJobManagementService, JobManagementService>()
+   .AddSingleton<ICommandValidator<Start>, PassValidator<Start>>()
+   .AddSingleton<ICommandValidator<Stop>, PassValidator<Stop>>()
+   .AddSingleton<ICommandValidator<Unknown>, PassValidator<Unknown>>()
+   .AddSingleton<ICommandValidator<RemoveSchedule>, PassValidator<RemoveSchedule>>()
+   .AddSingleton<ICommandValidator<CreateSchedule>, PassValidator<CreateSchedule>>()
+   .AddSingleton<ICommandValidator<Lang>, LangValidator>()
    .AddSingleton(sp => new RandomSendMessageJob(sp.GetRequiredService<ITelegramBotClient>(),
                                                 sp.GetRequiredService<ILogger<SendMessageJob>>(),
-                                                10))
+                                                15))
    .AddHostedService<BotService>()
    .AddHangfire(configuration => configuration
        .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -52,7 +60,7 @@ builder.Host.ConfigureLogging(logging =>
                                 {
                                     logging.ClearProviders();
                                     logging.SetMinimumLevel(LogLevel.Trace);
-                                    //logging.AddConsole();
+                                    logging.AddConsole();
                                 })
     .UseNLog();
 

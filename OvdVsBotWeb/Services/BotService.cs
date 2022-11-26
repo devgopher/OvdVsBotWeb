@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OvdVsBotWeb.DataAccess;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Polling;
 
 namespace OvdVsBotWeb.Services
@@ -24,13 +22,14 @@ namespace OvdVsBotWeb.Services
         {
             _logger.LogInformation("Starting BotService...");
             _botClient.StartReceiving(_updateHandler);
-
+          //  _botClient.
             await _jobManagementService.StartAll();
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Stopping BotService...");
+            //_botClient.
             await _botClient.CloseAsync(cancellationToken);
         }
     }

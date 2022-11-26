@@ -1,4 +1,5 @@
 ﻿using OvdVsBotWeb.DataAccess;
+using OvdVsBotWeb.Models.API.Commands.Validators;
 using OvdVsBotWeb.Models.Commands;
 using OvdVsBotWeb.ResourceManagement;
 using Telegram.Bot;
@@ -9,7 +10,8 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
     {
         public RemoveScheduleCommandProcessor(MessageTextManager messageTextManager, 
             ITelegramBotClient botClient,
-            IReadWriter<string> chatStorage) : base(messageTextManager, botClient, chatStorage)
+            IReadWriter<string> chatStorage,
+            ICommandValidator<RemoveSchedule> validator) : base(messageTextManager, botClient, chatStorage, validator)
         {
         }
 

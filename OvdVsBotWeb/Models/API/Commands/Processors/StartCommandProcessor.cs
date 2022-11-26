@@ -1,4 +1,5 @@
 ﻿using OvdVsBotWeb.DataAccess;
+using OvdVsBotWeb.Models.API.Commands.Validators;
 using OvdVsBotWeb.Models.Data;
 using OvdVsBotWeb.ResourceManagement;
 using OvdVsBotWeb.Services;
@@ -14,7 +15,8 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
         public StartCommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
             IReadWriter<string> chatStorage,
-            IJobManagementService jobManagementService) : base(messageTextManager, botClient, chatStorage)
+            IJobManagementService jobManagementService,
+            ICommandValidator<Start> validator) : base(messageTextManager, botClient, chatStorage, validator)
         {
             _jobManagementService = jobManagementService;
         }
