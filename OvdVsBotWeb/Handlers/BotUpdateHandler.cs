@@ -48,8 +48,6 @@ namespace OvdVsBotWeb.Handlers
 
                 var lang = SupportedLangs.EN; // NOTE: temporary!
                 ProcessCommands(text, update.Message.Chat.Id, lang, ref command, ref args, ref result);
-
-               // await _botClient.SendTextMessageAsync(update.Message.Chat.Id, result);
             }
             catch (Exception ex)
             {

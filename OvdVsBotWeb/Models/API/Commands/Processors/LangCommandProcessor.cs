@@ -13,14 +13,17 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
     {
         private readonly IJobManagementService _jobManagementService;
         private readonly ILogger<LangCommandProcessor> _logger;
+        private readonly IJobManagementService jobManagement;
 
         public LangCommandProcessor(MessageTextManager messageTextManager,
             ILogger<LangCommandProcessor> logger,
             ITelegramBotClient botClient,
             IReadWriter<string> chatStorage,
+            IJobManagementService jobManagement,
             ICommandValidator<Lang> validator) : base(messageTextManager, botClient, chatStorage, validator)
         {
             _logger = logger;
+            this.jobManagement = jobManagement;
         }
 
         protected override async Task InnerProcess(long chatId, params string[] args)
@@ -42,6 +45,10 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
             await _botClient.SendTextMessageAsync(chatId, _messageTextManager.GetText("LangMsg", chat.Lang));
 
             _chatStorage.Update(chat);
+
+            // restarts messaging jobs
+            await _jobManagementService.StopJob(chat.Id);
+            await _jobManagementService.StartJob(chat);
         }
     }
 }
