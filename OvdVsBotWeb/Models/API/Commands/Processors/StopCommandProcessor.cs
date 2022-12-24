@@ -17,7 +17,8 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
             ITelegramBotClient botClient,
             IReadWriter<string> chatStorage,
             IJobManagementService jobManagementService,
-            ICommandValidator<Stop> validator) : base(messageTextManager, botClient, chatStorage, validator)
+            ILogger<StopCommandProcessor> logger,
+            ICommandValidator<Stop> validator) : base(messageTextManager, botClient, chatStorage, logger, validator)
         {
             _jobManagementService = jobManagementService;
         }

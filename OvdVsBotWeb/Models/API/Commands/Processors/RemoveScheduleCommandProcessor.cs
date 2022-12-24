@@ -8,10 +8,11 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
 {
     public class RemoveScheduleCommandProcessor : CommandProcessor<RemoveSchedule>
     {
-        public RemoveScheduleCommandProcessor(MessageTextManager messageTextManager, 
+        public RemoveScheduleCommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
             IReadWriter<string> chatStorage,
-            ICommandValidator<RemoveSchedule> validator) : base(messageTextManager, botClient, chatStorage, validator)
+            ILogger<RemoveScheduleCommandProcessor> logger,
+            ICommandValidator<RemoveSchedule> validator) : base(messageTextManager, botClient, chatStorage, logger, validator)
         {
         }
 

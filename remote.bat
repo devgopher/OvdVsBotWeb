@@ -1,0 +1,1 @@
+ssh -i Ubuntu-Basic-1-1-10GB-4u0RdP7S.pem ubuntu@185.130.114.22

@@ -11,7 +11,8 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
         public CreateScheduleCommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
             IReadWriter<string> chatStorage,
-            ICommandValidator<CreateSchedule> validator) : base(messageTextManager, botClient, chatStorage, validator)
+            ILogger<CreateScheduleCommandProcessor> logger,
+            ICommandValidator<CreateSchedule> validator) : base(messageTextManager, botClient, chatStorage, logger, validator)
         {
         }
 

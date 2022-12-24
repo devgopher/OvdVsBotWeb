@@ -7,10 +7,11 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
 {
     public class UnknownCommandProcessor : CommandProcessor<Unknown>
     {
-        public UnknownCommandProcessor(MessageTextManager messageTextManager, 
+        public UnknownCommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
             IReadWriter<string> chatStorage,
-            ICommandValidator<Unknown> validator) : base(messageTextManager, botClient, chatStorage, validator)
+            ILogger<UnknownCommandProcessor> logger,
+            ICommandValidator<Unknown> validator) : base(messageTextManager, botClient, chatStorage, logger, validator)
         {
         }
 

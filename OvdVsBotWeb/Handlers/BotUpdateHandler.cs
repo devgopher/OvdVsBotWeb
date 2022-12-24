@@ -1,5 +1,4 @@
-﻿using OvdVsBotWeb.DataAccess;
-using OvdVsBotWeb.Models.API.Commands.Processors;
+﻿using OvdVsBotWeb.Models.API.Commands.Processors;
 using OvdVsBotWeb.ResourceManagement;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
@@ -42,9 +41,9 @@ namespace OvdVsBotWeb.Handlers
             try
             {
                 var text = update.Message.Text;
-                var command = "";
+                var command = string.Empty;
                 var args = new List<string>(5);
-                var result = "";
+                var result = string.Empty;
 
                 ProcessCommands(text, update.Message.Chat.Id, ref command, ref args, ref result);
             }
@@ -60,34 +59,40 @@ namespace OvdVsBotWeb.Handlers
             ref List<string> args,
             ref string result)
         {
-            if (Regex.IsMatch(text, simpleCommandPattern))
+            try
             {
-                command = Regex.Matches(text, simpleCommandPattern)
-                    .FirstOrDefault()
-                    .Groups[1].Value;
-                _cpFactory.Get(command)
-                    .Process(chatId);
-            }
-            else if (Regex.IsMatch(text, argsCommandPattern))
+                if (Regex.IsMatch(text, simpleCommandPattern))
+                {
+                    command = Regex.Matches(text, simpleCommandPattern)
+                        .FirstOrDefault()
+                        .Groups[1].Value;
+                    _cpFactory.Get(command)
+                        .Process(chatId);
+                }
+                else if (Regex.IsMatch(text, argsCommandPattern))
+                {
+                    command = Regex.Matches(text, argsCommandPattern)
+                        .FirstOrDefault()
+                        .Groups[1].Value;
+
+                    var argsString = Regex.Matches(text, argsCommandPattern)
+                                         .FirstOrDefault()
+                                         .Groups[2].Value;
+
+
+                    if (!string.IsNullOrWhiteSpace(argsString))
+                        args = argsString.Split(" ").ToList();
+
+                    _cpFactory.Get(command)
+                        .Process(chatId, args?.ToArray());
+                }
+                else
+                {
+                    result = _messageTextManager.GetText("ErroneousCommand", SupportedLangs.EN);
+                }
+            } catch (Exception ex)
             {
-                command = Regex.Matches(text, argsCommandPattern)
-                    .FirstOrDefault()
-                    .Groups[1].Value;
-
-                var argsString = Regex.Matches(text, argsCommandPattern)
-                                     .FirstOrDefault()
-                                     .Groups[2].Value;
-
-
-                if (!string.IsNullOrWhiteSpace(argsString))
-                    args = argsString.Split(" ").ToList();
-
-                _cpFactory.Get(command)
-                    .Process(chatId, args?.ToArray());
-            }
-            else
-            {
-                result = _messageTextManager.GetText("ErroneousCommand", SupportedLangs.EN);
+                _logger.LogError(ex, $"Error in {nameof(BotUpdateHandler)}: {ex.Message}");
             }
         }
     }

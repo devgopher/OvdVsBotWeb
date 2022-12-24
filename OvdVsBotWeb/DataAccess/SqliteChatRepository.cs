@@ -6,7 +6,7 @@ namespace OvdVsBotWeb.DataAccess
     public class SqliteChatRepository : IReadWriter<string>
     {
         private readonly OvdDbContext _dbContext;
-        private readonly object _sync = new object();
+        private readonly object _sync = new();
 
         public SqliteChatRepository(IServiceScopeFactory factory)
         {
@@ -26,11 +26,17 @@ namespace OvdVsBotWeb.DataAccess
             throw new NotImplementedException();
         }
 
-        public IEntity<string> Get(string id) => _dbContext.Chats.FirstOrDefault(c => c.Id == id);
+        public IEntity<string> Get(string id) => _dbContext
+            .Chats
+            .AsNoTracking()
+            .FirstOrDefault(c => c.Id == id);
 
         public IEntity<string> Get(Func<IEntity<string>> filter) => throw new NotImplementedException();
 
-        public IEnumerable<IEntity<string>> GetAll() => _dbContext.Chats.ToList();
+        public IEnumerable<IEntity<string>> GetAll() => _dbContext
+            .Chats
+            .AsNoTracking()
+            .ToList();
 
         //public IEntity<TId> Get(Func<IEntity<TId>> filter) => _dict.Where(x => filter(x));
 
