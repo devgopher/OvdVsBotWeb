@@ -1,13 +1,14 @@
 ﻿namespace OvdVsBotWeb.DataAccess
 {
-    public interface IReadWriter<TId>
+    public interface IReadWriter<TEntity, TId>
+        where TEntity : IEntity<TId>
     {
-        public IEntity<TId> Get(TId id);
-        public IEntity<TId> Get(Func<IEntity<TId>> filter);
-        public IEnumerable<IEntity<TId>> GetAll();
-        public void Add(IEntity<TId> entity);
-        public void Update(IEntity<TId> entity);
-        public void Remove(IEntity<TId> entity);
+        public TEntity Get(TId id);
+        public TEntity Get(Func<TEntity> filter);
+        public IEnumerable<TEntity> GetAll();
+        public void Add(TEntity entity);
+        public void Update(TEntity entity);
+        public void Remove(TEntity entity);
         public void Remove(TId id);
     }
 }

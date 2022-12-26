@@ -1,6 +1,7 @@
 ﻿using OvdVsBotWeb.DataAccess;
 using OvdVsBotWeb.Handlers;
 using OvdVsBotWeb.Models.API.Commands.Validators;
+using OvdVsBotWeb.Models.Data;
 using OvdVsBotWeb.ResourceManagement;
 using Telegram.Bot;
 
@@ -11,13 +12,13 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
     {
         protected readonly MessageTextManager _messageTextManager;
         protected readonly ITelegramBotClient _botClient;
-        protected readonly IReadWriter<string> _chatStorage;
+        protected readonly IReadWriter<Chat, string> _chatStorage;
         protected readonly ILogger _logger;
         protected readonly ICommandValidator<TCommand> _validator;
 
         protected CommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
-            IReadWriter<string> chatStorage,
+            IReadWriter<Chat, string> chatStorage,
             ILogger logger,
             ICommandValidator<TCommand> validator)
         {

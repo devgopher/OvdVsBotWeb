@@ -14,7 +14,7 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
 
         public StartCommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
-            IReadWriter<string> chatStorage,
+            IReadWriter<Chat, string> chatStorage,
             IJobManagementService jobManagementService,
             ILogger<StartCommandProcessor> logger,
             ICommandValidator<Start> validator) : base(messageTextManager, botClient, chatStorage, logger, validator)
@@ -24,17 +24,31 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
 
         protected override async Task InnerProcess(long chatId, params string[] args)
         {
-            if (_chatStorage.Get(chatId.ToString()) != default)
+            var chat = _chatStorage.Get(chatId.ToString()) as Chat;
+            if (chat != default && chat.IsActive)
                 return;
-
-            var chat = new Chat()
+            else
             {
-                ChatId = chatId.ToString()
-            };
+                if (chat == default)
+                {
+                    chat = new Chat()
+                    {
+                        ChatId = chatId.ToString(),
+                        IsActive = true
+                    };
+
+                    _chatStorage.Add(chat);
+                }
+                else
+                {
+
+                    chat.IsActive = true;
+                    _chatStorage.Update(chat);
+                }
+            }
 
             await _botClient.SendTextMessageAsync(chat.Id, _messageTextManager.GetText("HelloMsg", SupportedLangs.EN));
 
-            _chatStorage.Add(chat);
 
             await _jobManagementService.StartJob(chat);
         }

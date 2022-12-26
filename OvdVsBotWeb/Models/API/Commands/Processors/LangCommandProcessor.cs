@@ -17,7 +17,7 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
         public LangCommandProcessor(MessageTextManager messageTextManager,
             ILogger<LangCommandProcessor> logger,
             ITelegramBotClient botClient,
-            IReadWriter<string> chatStorage,
+            IReadWriter<Chat, string> chatStorage,
             IJobManagementService jobManagement,
             ICommandValidator<Lang> validator) : base(messageTextManager, botClient, chatStorage, logger, validator) 
             => _jobManagement = jobManagement;
@@ -35,6 +35,10 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
                 if (chat == default)
                 {
                     _logger.LogInformation($"Chat {chatId} wasn't found in a storage!");
+                    return;
+                } else if (!chat.IsActive)
+                {
+                    _logger.LogInformation($"Chat {chatId} is inactive!");
                     return;
                 }
 

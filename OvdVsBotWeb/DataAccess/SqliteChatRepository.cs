@@ -3,67 +3,59 @@ using OvdVsBotWeb.Models.Data;
 
 namespace OvdVsBotWeb.DataAccess
 {
-    public class SqliteChatRepository : IReadWriter<string>
+    public class SqliteChatRepository : IReadWriter<Chat, string>
     {
         private readonly OvdDbContext _dbContext;
-        private readonly object _sync = new();
 
         public SqliteChatRepository(IServiceScopeFactory factory)
         {
-            _dbContext = factory.CreateScope().ServiceProvider.GetRequiredService<OvdDbContext>();
+            _dbContext = factory
+                .CreateScope()
+                .ServiceProvider
+                .GetRequiredService<OvdDbContext>();
+            //_dbContext.ChangeTracker.Clear();
+            //_dbContext.ChangeTracker.AutoDetectChangesEnabled = false;
+            //_dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
-        public void Add(IEntity<string> entity)
+        public void Add(Chat entity)
         {
-            lock (_sync) {
-                _dbContext.Add(entity);
-                _dbContext.SaveChanges();
-            }
+            _dbContext.Add(entity);
+            _dbContext.SaveChanges();
         }
 
-        public bool Any()
-        {
-            throw new NotImplementedException();
-        }
+        public bool Any() => throw new NotImplementedException();
 
-        public IEntity<string> Get(string id) => _dbContext
+        public Chat Get(string id) => _dbContext
             .Chats
-            .AsNoTracking()
+            .AsQueryable()
             .FirstOrDefault(c => c.Id == id);
 
-        public IEntity<string> Get(Func<IEntity<string>> filter) => throw new NotImplementedException();
+        public Chat Get(Func<Chat> filter) => throw new NotImplementedException();
 
-        public IEnumerable<IEntity<string>> GetAll() => _dbContext
+        public IEnumerable<Chat> GetAll() => _dbContext
             .Chats
-            .AsNoTracking()
-            .ToList();
+            .AsNoTracking();
 
         //public IEntity<TId> Get(Func<IEntity<TId>> filter) => _dict.Where(x => filter(x));
 
-        public void Remove(IEntity<string> entity)
+        public void Remove(Chat entity)
         {
-            lock (_sync)
-            {
-                _dbContext.Remove(entity);
-                _dbContext.SaveChanges();
-            }
-        }
-        public void Remove(string id)
-        {
-            lock (_sync)
-            {
-                _dbContext.Chats.Remove(_dbContext.Chats.FirstOrDefault(c => c.Id == id));
-                _dbContext.SaveChanges();
-            }
+            //_dbContext.Entry(entity).State = EntityState.Modified;
+            //_dbContext.SaveChanges();
         }
 
-        public void Update(IEntity<string> entity)
+        public void Remove(string id)
         {
-            lock (_sync)
-            {
-                _dbContext.Chats.Update((Chat)entity);
-                _dbContext.SaveChanges();
-            }
+            //var entity = Get(id);
+            //_dbContext.Entry(entity).State = EntityState.Modified;
+            //_dbContext.SaveChanges();
+        }
+
+        public void Update(Chat entity)
+        {
+            //_dbContext.Entry(entity).State = EntityState.Modified;
+            //_dbContext.SaveChanges();
         }
     }
 }

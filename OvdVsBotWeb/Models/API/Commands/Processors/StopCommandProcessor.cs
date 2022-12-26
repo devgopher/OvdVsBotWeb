@@ -15,7 +15,7 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
 
         public StopCommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
-            IReadWriter<string> chatStorage,
+            IReadWriter<Chat, string> chatStorage,
             IJobManagementService jobManagementService,
             ILogger<StopCommandProcessor> logger,
             ICommandValidator<Stop> validator) : base(messageTextManager, botClient, chatStorage, logger, validator)
@@ -29,9 +29,10 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
             if (chat == default)
                 return;
 
+            chat.IsActive = false;
             await _botClient.SendTextMessageAsync(chatId, _messageTextManager.GetText("GoodByeMsg", chat.Lang));
 
-            _chatStorage.Remove(chatId.ToString());
+            _chatStorage.Update(chat);
 
             await _jobManagementService.StopJob(chatId.ToString());
         }

@@ -9,6 +9,7 @@ using OvdVsBotWeb.Models.API.Commands;
 using OvdVsBotWeb.Models.API.Commands.Processors;
 using OvdVsBotWeb.Models.API.Commands.Validators;
 using OvdVsBotWeb.Models.Commands;
+using OvdVsBotWeb.Models.Data;
 using OvdVsBotWeb.ResourceManagement;
 using OvdVsBotWeb.Services;
 using OvdVsBotWeb.Settings;
@@ -30,7 +31,7 @@ builder.Services
    .AddSingleton<CommandProcessor<CreateSchedule>, CreateScheduleCommandProcessor>()
    .AddSingleton<CommandProcessor<RemoveSchedule>, RemoveScheduleCommandProcessor>()
    .AddSingleton<CommandProcessor<Unknown>, UnknownCommandProcessor>()
-   .AddSingleton<IReadWriter<string>, SqliteChatRepository>()
+   .AddSingleton<IReadWriter<Chat, string>, SqliteChatRepository>()
    .AddSingleton<IJobManager, JobManager>()
    .AddSingleton<MessageTextManager>()
    .AddSingleton<IUpdateHandler, BotUpdateHandler>()

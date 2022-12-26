@@ -11,14 +11,14 @@ namespace OvdVsBotWeb.Services
 {
     public class JobManagementService : IJobManagementService
     {
-        private readonly IReadWriter<string> _chatStorage;
+        private readonly IReadWriter<Chat, string> _chatStorage;
         private readonly ITelegramBotClient _botClient;
         private readonly IServiceProvider _sp;
         private readonly IJobManager _jobManager;
         private readonly MessageTextManager _messageTextManager;
 
         public JobManagementService(ITelegramBotClient botClient,
-            IReadWriter<string> chatStorage,
+            IReadWriter<Chat, string> chatStorage,
             IJobManager jobManager,
             IServiceProvider sp,
             MessageTextManager messageTextManager)

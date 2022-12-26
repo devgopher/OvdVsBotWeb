@@ -1,6 +1,7 @@
 ﻿using OvdVsBotWeb.DataAccess;
 using OvdVsBotWeb.Models.API.Commands;
 using OvdVsBotWeb.Models.API.Commands.Validators;
+using OvdVsBotWeb.Models.Data;
 using OvdVsBotWeb.ResourceManagement;
 using Telegram.Bot;
 
@@ -10,7 +11,7 @@ namespace OvdVsBotWeb.Models.API.Commands.Processors
     {
         public CreateScheduleCommandProcessor(MessageTextManager messageTextManager,
             ITelegramBotClient botClient,
-            IReadWriter<string> chatStorage,
+            IReadWriter<Chat, string> chatStorage,
             ILogger<CreateScheduleCommandProcessor> logger,
             ICommandValidator<CreateSchedule> validator) : base(messageTextManager, botClient, chatStorage, logger, validator)
         {

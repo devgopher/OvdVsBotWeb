@@ -7,6 +7,8 @@ namespace OvdVsBotWeb.Models.Data
     {
         public string ChatId { get; set; }
         public SupportedLangs Lang { get; set; }
+
+        public bool IsActive { get; set; }
         public string Id { get => ChatId; set => ChatId = value; }
     }
 }
